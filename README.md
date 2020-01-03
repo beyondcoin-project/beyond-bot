@@ -58,7 +58,7 @@ Delete all visible messages from chat.
 ... and many many many more options, please check the config file  
 
 ## Installation
-1. Create a MySQL Database and import the cryptocurrency-crypto-bot.sql  
+1. Create a MySQL Database and import the beyond-bot.sql  
 2. Edit the config file carefully without missing any needed value!
 3. Start your bot and enjoy! -> node index.js
 
