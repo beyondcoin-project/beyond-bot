@@ -1,18 +1,18 @@
-//var config = require('./config.js');
+//let config = require('./config.js');
 try{
-  var config = process.cwd()+'/config.js';
+  let config = process.cwd()+'/config.js';
   config = require(config);
 }catch (error){
   console.error('ERROR -> Unable to load config file.');
   process.exit(1);
 }
 
-var chat = require("./functions/chat.js");
-var check = require("./functions/check.js");
-var command = require("./functions/command.js");
-var cron = require("./functions/cron.js");
-// var storage = require("./functions/storage.js"); 
-var log = require("./functions/log.js");
+let chat = require("./functions/chat.js");
+let check = require("./functions/check.js");
+let command = require("./functions/command.js");
+let cron = require("./functions/cron.js");
+// let storage = require("./functions/storage.js"); 
+let log = require("./functions/log.js");
 
 /* ------------------------------------------------------------------------------ */
 // // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -22,13 +22,13 @@ const { Client } = require('discord.js');
 const client = new Client();
 global.globalClient = client;
 
-var cooldownTimes = {}; // Cooldown timers by user, id and timestamp
+let cooldownTimes = {}; // Cooldown timers by user, id and timestamp
 
 /* Latest active users */
-var activeUsers = []; 
+let activeUsers = []; 
 
 /* BOT ENABLE/DISABLE */
-var botEnabled = 1;
+let botEnabled = 1;
 
 // Coin price if real price enabled on config
 global.coinPrice = 0; 
@@ -51,16 +51,16 @@ client.on('ready', () => {
 
 client.on('message', msg => {
   
-  var userID = msg.author.id;
-  var userName = msg.author;
-  var messageFull = msg;
-  var messageType = msg.channel.type;
-  var messageContent = msg.content;
-  var channelID = msg.channel.id;
-  var userRoles = 'none';
-  var serverUsers = [];
-  var userBot = msg.author.bot;
-  var currentTimestamp = Math.floor(Date.now() / 1000);
+  let userID = msg.author.id;
+  let userName = msg.author;
+  let messageFull = msg;
+  let messageType = msg.channel.type;
+  let messageContent = msg.content;
+  let channelID = msg.channel.id;
+  let userRoles = 'none';
+  let serverUsers = [];
+  let userBot = msg.author.bot;
+  let currentTimestamp = Math.floor(Date.now() / 1000);
 
   // Only check messages if its not the bot itself or another bot
   if(userID == config.bot.botID) 
@@ -74,7 +74,7 @@ client.on('message', msg => {
   activeUsers[userID] = currentTimestamp;
   //console.log('Added/Updated -> '+userID+' t: '+currentTimestamp);
   // -> and remove inactive if no more in timeframe
-  for (var key in activeUsers) {
+  for (let key in activeUsers) {
     if(activeUsers[key] < (currentTimestamp-config.bot.activeUserTime)){
       //console.log('deleted: '+activeUsers[key]+' - id: '+ key);
       delete activeUsers[key];
@@ -87,23 +87,23 @@ if(messageContent.startsWith(config.bot.commandPrefix)){
     // Get user role if not direct message 
     if(messageType !== 'dm'){
       try{
-        var userRoles = msg.member.roles;
+        let userRoles = msg.member.roles;
       }catch (error){
         log.log_write_console('Failed to get role 1');
-        var userRoles = 'none';
+        let userRoles = 'none';
       }
     }
     
     try{
-      var userRole = check.check_user_role(userID,userRoles);
+      let userRole = check.check_user_role(userID,userRoles);
     }catch (error){
       log.log_write_console('Failed to get role 2');
-      var userRole = 0;
+      let userRole = 0;
     }
 
     // Enable / Disable bot commands
     // Check if command is start or stop
-    var startStopCheck = messageContent.split(/ +/);
+    let startStopCheck = messageContent.split(/ +/);
     if(startStopCheck[0].substr(1) === 'stop' && userRole == 3){
       botEnabled = 0;
       chat.chat_reply(msg,'embed',false,messageType,config.colors.special,false,false,false,config.messages.startstop.disabled,false,false,false,false);
@@ -159,16 +159,16 @@ if(messageContent.startsWith(config.bot.commandPrefix)){
     }
 
     // Check if command is withdrawal request and not lowercase it because of address
-    var withdrawalCheck = messageContent.split(/ +/);
+    let withdrawalCheck = messageContent.split(/ +/);
     if(withdrawalCheck[0].substr(1) === 'w' || withdrawalCheck[0].substr(1) === 'withdraw'){
-      var recievedCommand = messageContent.split(/ +/);
+      let recievedCommand = messageContent.split(/ +/);
     }else{
-      var recievedCommand = messageContent.toLowerCase().split(/ +/);
+      let recievedCommand = messageContent.toLowerCase().split(/ +/);
     }
 
     // Build recievedCommand partFive for drop phrase
-    var dropPhrase = "";
-    for (var i = 4 ; i < recievedCommand.length ; ++i){
+    let dropPhrase = "";
+    for (let i = 4 ; i < recievedCommand.length ; ++i){
       if(i != 4)
         dropPhrase = dropPhrase + ' ';
       dropPhrase = dropPhrase + recievedCommand[i];
@@ -182,7 +182,7 @@ if(messageContent.startsWith(config.bot.commandPrefix)){
     dropPhrase = dropPhrase.trim();
 
     /// DISABLED AND NOT USED AND OVERWRITTEN ON RAIN FUNCTION // Check if command is rain and get user list from discord server
-    var rainCheck = messageContent.split(/ +/);
+    let rainCheck = messageContent.split(/ +/);
     if(rainCheck[0].substr(1) === 'rain' && rainCheck[1] === 'all' || rainCheck[1] === 'random'){
       // This crashes the bot if there are to many discord users and multiple channel the bot is in so changed to grab random users from database with maxRainRandomUsers from config as more is not needed because rain all just grabs total count and credits all users
       /*if(client.users){
@@ -193,7 +193,7 @@ if(messageContent.startsWith(config.bot.commandPrefix)){
     }
 
     // Check if command is on ignor list
-    var ignorCheck = recievedCommand[0].substr(1);
+    let ignorCheck = recievedCommand[0].substr(1);
     if(config.bot.commandIgnor.includes(ignorCheck)){
       return;
     }
@@ -214,7 +214,7 @@ if(config.wallet.credit) // Credit new deposits
   cron.cron_credit_deposits();
 if(config.staking.check) // Check for new stakes
   cron.cron_get_stakes();
-if(config.staking.credit) // Credit new stakes
+if(config.staking.credit) // CrbotEnablededit new stakes
   cron.cron_credit_stakes();
 if(config.coinPrice.enabled) // Get coin price 
-  cron.cron_price();
+  cron.cron_price(botEnabled);
