@@ -1,6 +1,6 @@
-//var config = require('../config.js');
+//let config = require('../config.js');
 try{
-    var config = process.cwd()+'/config.js';
+    let config = process.cwd()+'/config.js';
     config = require(config);
 }catch (error){
     console.error('ERROR -> Unable to load config file.');
@@ -9,9 +9,9 @@ try{
 
 const Big = require('big.js'); // https://github.com/MikeMcl/big.js -> http://mikemcl.github.io/big.js/
 
-var command = require("./command.js");
-var check = require("./check.js");
-var transaction = require("./transaction.js");
+let command = require("./command.js");
+let check = require("./check.js");
+let transaction = require("./transaction.js");
 
 /* ------------------------------------------------------------------------------ */
 // // // // // // // // // // // // // // // // // // // // // // // // // // // //
@@ -64,14 +64,14 @@ module.exports = {
     /* ------------------------------------------------------------------------------ */
 
     cron_price: async function() {
-        var newCoinPrice = 0; 
+        let newCoinPrice = 0; 
         newCoinPrice = await check.check_get_coin_price();
         if(newCoinPrice){
             coinPrice = newCoinPrice;
             coinCentPrice = Big(0.01).div(newCoinPrice).toFixed(8);
             saveCoinPriceHistory = await transaction.transaction_coin_price_history(coinPrice);
         }
-        setInterval(async function (){ 
+        setInterval(async function (botEnabled){ 
             // Check if bot is curently disabled
             if(botEnabled){
                 newCoinPrice = await check.check_get_coin_price();
